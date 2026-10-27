@@ -4,15 +4,17 @@ from core.engine import neural_core
 from pydantic import BaseModel
 
 app = FastAPI(
-    title="SB-61-Core Neural System",
-    description="Secure Neural Architecture with 86 Processing Stations and 5M Synaptic Matrix",
-    version="1.0.0"
+    title="SB-61-Core Neural Architecture",
+    description="Enterprise-Grade Secure Neural Architecture featuring 86 Processing Stations and 5M Synaptic Matrix.",
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc"
 )
 
 class NeuralInput(BaseModel):
     data_signal: str
 
-@app.get("/")
+@app.get("/", tags=["System Status"])
 async def root():
     return {
         "system": "SB-61-Core",
@@ -20,7 +22,7 @@ async def root():
         "security_status": "Protected"
     }
 
-@app.get("/secure-status", dependencies=[Depends(verify_neural_token)])
+@app.get("/secure-status", tags=["Security"], dependencies=[Depends(verify_neural_token)])
 async def secure_status():
     return {
         "system": "SB-61-Core",
@@ -28,8 +30,7 @@ async def secure_status():
         "message": "Welcome to the secure core matrix of SB-61."
     }
 
-# نقطة نهاية معالجة الإشارات العصبية (محمية بالمفتاح الآمن)
-@app.post("/process", dependencies=[Depends(verify_neural_token)])
+@app.post("/process", tags=["Neural Engine"], dependencies=[Depends(verify_neural_token)])
 async def process_neural_data(payload: NeuralInput):
     result = neural_core.process_signal(payload.data_signal)
     return result
